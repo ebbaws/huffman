@@ -12,8 +12,6 @@ void HuffmanTree::exploreNode(int nodeID, unsigned long long code,
 	if ((leftID == -1) && (rightID == -1)) {
 		// Node is leaf; write code to table
 		codeTable.setCode(nodeID, code, length);
-		//cout << "Wrote code " << code << " of length " << length
-		//	<< "to position " << nodeID << " in code table" << endl;
 	}
 	else {
 		// Explore children
@@ -33,9 +31,8 @@ HuffmanTree::~HuffmanTree()
 
 // Build the Huffman tree. The charStats arg should point to an 
 // array of the # of occurrences for each character.
-bool HuffmanTree::build(int *charStats) {
-	bool verbose = true;
-
+bool HuffmanTree::build(int *charStats, bool verbose = false) {
+	
 	alphabetSize = maxAlphabetSize;
 	int nodeWeights[maxTreeSize];
 	int indexes[maxAlphabetSize];
@@ -46,7 +43,6 @@ bool HuffmanTree::build(int *charStats) {
 		for (int i = 0; i < maxAlphabetSize; i++) {
 			cout << i << "\t" << charStats[indexes[i]] << "\t" <<
 				indexes[i] << endl;
-			//	indexes[i] << "/" << index2char(indexes[i]) << endl;
 		}
 	}
 
