@@ -15,7 +15,7 @@ private:
 public:
 	HuffmanTree();
 	~HuffmanTree();
-	bool build(int *charStats, bool verbose);
+	bool build(int *charStats, bool verbose = false);
 	void writeCodes(CodeTable& codeTable);
 	void print();
 };

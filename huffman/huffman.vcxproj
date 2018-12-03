@@ -154,12 +154,14 @@
     <ClCompile Include="ByteBuffer.cpp" />
     <ClCompile Include="CodeTable.cpp" />
     <ClCompile Include="huffman2.cpp" />
+    <ClCompile Include="HuffmanEncoder.cpp" />
     <ClCompile Include="HuffmanTree.cpp" />
     <ClCompile Include="misc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ByteBuffer.h" />
     <ClInclude Include="CodeTable.h" />
+    <ClInclude Include="HuffmanEncoder.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="HuffmanTree.h" />
   </ItemGroup>

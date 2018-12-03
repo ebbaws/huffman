@@ -31,7 +31,7 @@ HuffmanTree::~HuffmanTree()
 
 // Build the Huffman tree. The charStats arg should point to an 
 // array of the # of occurrences for each character.
-bool HuffmanTree::build(int *charStats, bool verbose = false) {
+bool HuffmanTree::build(int *charStats, bool verbose) {
 	
 	alphabetSize = maxAlphabetSize;
 	int nodeWeights[maxTreeSize];

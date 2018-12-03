@@ -4,6 +4,7 @@
 #include <string>
 #include "misc.h"
 #include "HuffmanTree.h"
+#include "HuffmanEncoder.h"
 #include "ByteBuffer.h"
 using namespace std;
 
@@ -11,13 +12,6 @@ string infilename = "C:\\learn\\cantrbry\\asyoulik.txt";
 string outfilename = "asyoulik.txt.huff";
 
 char myLine[100];
-
-// currently we are getting a <1 compression ratio so
-// clearly this is not working correctly :/
-// the code table is looking weird
-// update: the huffman tree is not looking the same as the original
-// maybe we should check that the sorting is working first
-// ok the sorting appears to work at least for a small example
 
 int encode()
 {
@@ -120,6 +114,14 @@ int encode()
 
 }
 
+bool testEncoder() {
+	HuffmanEncoder encoder;
+	encoder.setInputFile(infilename);
+	encoder.setOutputFile(outfilename);
+	
+	return encoder.encode();
+}
+
 void testSort() {
 	int values[10] = { 19, -4, 6, 23, 108, -11, 78, 90, 24, 35 };
 	int indexes[10];
@@ -160,6 +162,10 @@ void testByteBuffer() {
 
 int main ()  {
 
-	return encode();
+	//return encode();
 	//testSort();
+	if (testEncoder()) return 0;
+
+	return -1;
+
 }
