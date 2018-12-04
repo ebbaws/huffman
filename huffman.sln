@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "huffman", "huffman\huffman.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "huffman_encoder_original", "huffman_encoder_original\huffman_encoder_original.vcxproj", "{DBE36C05-3AC8-4F4B-9409-997E3F67A826}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "huffman_decoder_original", "huffman_decoder_original\huffman_decoder_original.vcxproj", "{06AB9CB3-52C1-48C1-AB5E-5E0D062285B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{DBE36C05-3AC8-4F4B-9409-997E3F67A826}.Release|x64.Build.0 = Release|x64
 		{DBE36C05-3AC8-4F4B-9409-997E3F67A826}.Release|x86.ActiveCfg = Release|Win32
 		{DBE36C05-3AC8-4F4B-9409-997E3F67A826}.Release|x86.Build.0 = Release|Win32
+		{06AB9CB3-52C1-48C1-AB5E-5E0D062285B3}.Debug|x64.ActiveCfg = Debug|x64
+		{06AB9CB3-52C1-48C1-AB5E-5E0D062285B3}.Debug|x64.Build.0 = Debug|x64
+		{06AB9CB3-52C1-48C1-AB5E-5E0D062285B3}.Debug|x86.ActiveCfg = Debug|Win32
+		{06AB9CB3-52C1-48C1-AB5E-5E0D062285B3}.Debug|x86.Build.0 = Debug|Win32
+		{06AB9CB3-52C1-48C1-AB5E-5E0D062285B3}.Release|x64.ActiveCfg = Release|x64
+		{06AB9CB3-52C1-48C1-AB5E-5E0D062285B3}.Release|x64.Build.0 = Release|x64
+		{06AB9CB3-52C1-48C1-AB5E-5E0D062285B3}.Release|x86.ActiveCfg = Release|Win32
+		{06AB9CB3-52C1-48C1-AB5E-5E0D062285B3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
