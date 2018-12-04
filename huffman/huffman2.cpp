@@ -9,115 +9,14 @@
 using namespace std;
 
 string infilename = "C:\\learn\\cantrbry\\asyoulik.txt";
-string outfilename = "asyoulik.txt.huff";
+string outfilename = "output.huff";
 
 char myLine[100];
 
-int encode()
-{
-	int charStats[maxAlphabetSize];
-
-	ifstream::pos_type size;
-	char * memblock;
-
-	for (int j = 0; j < maxAlphabetSize; j++)
-		charStats[j] = 0; // Initialize statistics
-
-	// Open the input file to gather statistics
-	ifstream file(infilename, ios::in | ios::binary | ios::ate);
-	if (file.is_open())
-	{
-		size = file.tellg();
-		memblock = new char[(unsigned int)size];
-		file.seekg(0, ios::beg);
-		file.read(memblock, size);
-		file.close();
-
-		cout << "File loaded." << endl;
-
-		cout << "Gathering statistics..." << endl;
-
-		//Count number of occurrences for every symbol
-		for (int j = 0; j < size; j++)
-		{
-			charStats[(unsigned char)memblock[j]]++;
-		}
-
-		delete[] memblock;
-	}
-	else {
-		cout << "Unable to open file." << endl;
-		return -1;
-	}
-
-	cout << "Building code tree..." << endl;
-
-	HuffmanTree tree;
-	tree.build(charStats);
-
-	tree.print();
-
-	CodeTable codeTable = CodeTable();
-	tree.writeCodes(codeTable);
-
-	//codeTable.print();
-
-	cout << "Standardizing code table" << endl;
-
-	codeTable.standardizeAndSetEOF();
-	
-	//codeTable.print();
-
-	file.open(infilename, ios::in | ios::binary | ios::ate);
-
-	double inSize, outSize;
-
-	if (file.is_open()) {
-
-		size = file.tellg();
-		inSize = (double)size;
-		memblock = new char[(int)size];
-		file.seekg(0, ios::beg);
-		file.read(memblock, size);
-		file.close();
-
-		cout << "Number of chars in original file: " << (int)size << endl;
-		cout << "Writing to file... " << endl;
-
-		ByteBuffer buffer = ByteBuffer();
-		ofstream outputStream(outfilename, ios::binary);
-		codeTable.writeSideInfo(buffer, outputStream);
-
-		// Encode and write to file
-		for (int j = 0; j < size; j++)
-		{
-			codeTable.writeCode(char2index(memblock[j]),
-				buffer, outputStream);
-		}
-		codeTable.writeEOF(buffer, outputStream);
-		outSize = (double)(outputStream.tellp());
-
-		outputStream.close();
-
-	}
-	else {
-		cout << "Unable to open file";
-		return -1;
-	}
-
-	cout << endl << "Finished writing to file. " << endl;
-	cout << "Bits per character (full bytes): " << outSize * 8 / inSize << endl;
-	cout << "Compression ratio: " << inSize / outSize << endl;
-
-	return 0;
-	//cin.getline(myLine, 100);
-
-}
-
-bool testEncoder() {
+bool encode(string & inputFilePath, string & outputFilePath) {
 	HuffmanEncoder encoder;
-	encoder.setInputFile(infilename);
-	encoder.setOutputFile(outfilename);
+	encoder.setInputFile(inputFilePath);
+	encoder.setOutputFile(outputFilePath);
 	
 	return encoder.encode();
 }
@@ -160,12 +59,30 @@ void testByteBuffer() {
 
 }
 
-int main ()  {
+int main (int argc, char *argv[])  {
 
-	//return encode();
-	//testSort();
-	if (testEncoder()) return 0;
+	if (argc > 1) {
+		int fileNameLength = strlen(argv[1]);
 
-	return -1;
+		if (fileNameLength > 0) {
+			string inputFile(argv[1], fileNameLength);
+			cout << "File name: " << inputFile << endl;
+			string outputFile = "output.huff";
+			if (encode(inputFile, outputFile)) {
+				cout << "Name of encoded file: " << outputFile << endl;
+			}
+			else {
+				cout << "Encoding failed" << endl;
+			}
+
+
+		}
+		else {
+			cout << "Please specify file name" << endl;
+		}
+
+	}
+
+	return 0;
 
 }
