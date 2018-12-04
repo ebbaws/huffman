@@ -1,4 +1,6 @@
-#pragma once
+#ifndef HUFFMANENCODER_H
+#define HUFFMANENCODER_H
+
 #include <string>
 using namespace std;
 
@@ -17,3 +19,4 @@ public:
 
 };
 
+#endif

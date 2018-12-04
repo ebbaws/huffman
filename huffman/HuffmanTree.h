@@ -1,4 +1,6 @@
-#pragma once
+#ifndef HUFFMANTREE_H
+#define HUFFMANTREE_H
+
 #include "misc.h"
 #include "CodeTable.h"
 
@@ -20,3 +22,4 @@ public:
 	void print();
 };
 
+#endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CODETABLE_H
+#define CODETABLE_H
+
 #include "misc.h"
 #include "ByteBuffer.h"
 class CodeTable
@@ -23,3 +25,4 @@ public:
 	void setCode(int index, unsigned long long code, int codeLength);
 };
 
+#endif

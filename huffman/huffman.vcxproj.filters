@@ -41,13 +41,13 @@
     <ClInclude Include="CodeTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="misc.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="ByteBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HuffmanEncoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="misc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

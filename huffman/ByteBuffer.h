@@ -1,4 +1,6 @@
-#pragma once
+#ifndef BYTEBUFFER_H
+#define BYTEBUFFER_H
+
 #include <fstream>
 
 class ByteBuffer
@@ -17,4 +19,6 @@ public:
 		bool writeUnfinished = false); 
 	void print();
 };
+
+#endif
 
