@@ -21,6 +21,76 @@ bool encode(string & inputFilePath, string & outputFilePath) {
 	return encoder.encode();
 }
 
+bool decode(string & inputFilePath, string & outputFilePath) {
+	// start working on the decoder here
+
+	CodeTable table;
+	
+	bool res = table.initializeFromFileHeader(inputFilePath);
+	if (!res) return false;
+
+	/*
+	ifstream::pos_type size;
+	char * memblock;
+	int split, alphsize;
+	ifstream file(inputFilePath, ios::in | ios::binary | ios::ate);
+	if (file.is_open())
+	{
+		size = file.tellg();
+		memblock = new char[(int)size];
+		file.seekg(0, ios::beg);
+		file.read(memblock, size);
+		file.close();
+		CodeTable table;
+
+
+	}
+	else {
+		cout << "Unable to open file.";
+		return false;
+	}
+	*/
+
+}
+
+int main (int argc, char *argv[])  {
+	/*
+	if (argc > 1) {
+		int fileNameLength = strlen(argv[1]);
+
+		if (fileNameLength > 0) {
+			string inputFile(argv[1], fileNameLength);
+			cout << "File name: " << inputFile << endl;
+			string outputFile = "output.huff";
+			if (encode(inputFile, outputFile)) {
+				cout << "Name of encoded file: " << outputFile << endl;
+			}
+			else {
+				cout << "Encoding failed" << endl;
+			}
+
+
+		}
+		else {
+			cout << "Please specify file name" << endl;
+		}
+
+	}
+	*/
+
+	encode(infilename, outfilename);
+	
+	string decoderOutputFile = "asyoulik_decoded.txt";
+	
+	decode(outfilename, decoderOutputFile);
+
+	//return decode(inputFile, outputFile) ? 0 : -1;
+
+
+}
+
+
+/*
 void testSort() {
 	int values[10] = { 19, -4, 6, 23, 108, -11, 78, 90, 24, 35 };
 	int indexes[10];
@@ -47,9 +117,9 @@ void testByteBuffer() {
 	buffer.print();
 	buffer.addBits(2, 3);
 	buffer.print();
-	
+
 	unsigned long long superLongCode = 0x97ffffffff;
-	
+
 	buffer.addBits(superLongCode, 40);
 	buffer.print();
 
@@ -59,30 +129,4 @@ void testByteBuffer() {
 
 }
 
-int main (int argc, char *argv[])  {
-
-	if (argc > 1) {
-		int fileNameLength = strlen(argv[1]);
-
-		if (fileNameLength > 0) {
-			string inputFile(argv[1], fileNameLength);
-			cout << "File name: " << inputFile << endl;
-			string outputFile = "output.huff";
-			if (encode(inputFile, outputFile)) {
-				cout << "Name of encoded file: " << outputFile << endl;
-			}
-			else {
-				cout << "Encoding failed" << endl;
-			}
-
-
-		}
-		else {
-			cout << "Please specify file name" << endl;
-		}
-
-	}
-
-	return 0;
-
-}
+*/

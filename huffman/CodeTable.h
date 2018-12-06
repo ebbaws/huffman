@@ -21,8 +21,8 @@ public:
 	void writeSideInfo(ByteBuffer& buffer, std::ofstream& stream);
 	void writeCode(int index, ByteBuffer& buffer, std::ofstream& stream);
 	void writeEOF(ByteBuffer& buffer, std::ofstream& stream);
-
 	void setCode(int index, unsigned long long code, int codeLength);
+	bool initializeFromFileHeader(std::string &fileName);
 };
 
 #endif

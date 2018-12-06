@@ -90,7 +90,7 @@ bool HuffmanTree::build(int *charStats, bool verbose) {
 
 			// Step through indexes vector and move the new node to the left
 			// until the nodes are sorted by weight again
-			int currentIndex = end - 1; // starts at 66 in first iteration
+			int currentIndex = end - 1;
 			while ((currentIndex >= 0) && (nodeWeights[treeSize] > nodeWeights[indexes[currentIndex]]))
 			{
 				indexes[currentIndex + 1] = indexes[currentIndex];

@@ -65,7 +65,10 @@ bool HuffmanEncoder::encode() {
 	tree.writeCodes(codeTable);
 
 	cout << "Standardizing code table" << endl;
+	//codeTable.print();
 	codeTable.standardizeAndSetEOF();
+	//codeTable.print();
+	
 
 	file.open(inputFilePath, ios::in | ios::binary | ios::ate);
 

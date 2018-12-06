@@ -57,14 +57,18 @@ void CodeTable::standardizeAndSetEOF() {
 		thisLength = lengths[indexes[currentIdx]];
 		code = code + 1;
 		// could the below line be changed to left shift instead?
-		// also that cast is not good
+		// also that cast is probly not good
 		code = code * (int)pow(2.0, (thisLength - oldLength)); 
 		codes[indexes[currentIdx]] = code;
 	}
 
 	// Modify the tree slightly to include an EOF code
 	// by splitting the "least likely" node
-	leastLikelyIdx = indexes[255];
+	leastLikelyIdx = indexes[255]; 
+
+	//cout << "\"Least likely\" symbol (standardize function): " << leastLikelyIdx << " (" <<
+	//	index2char(leastLikelyIdx) << ")" << endl;
+
 	codes[leastLikelyIdx] = 2 * codes[leastLikelyIdx];
 	lengths[leastLikelyIdx]++;
 	codeEOF = codes[leastLikelyIdx] + 1;
@@ -78,7 +82,7 @@ void CodeTable::writeSideInfo(ByteBuffer & buffer, std::ofstream& stream)
 		int currentLength = lengths[i];
 		if (i == leastLikelyIdx)
 			currentLength = currentLength - 1;
-		buffer.addBits(lengths[i], 8); // implicit cast -- dunno about this
+		buffer.addBits(currentLength, 8); // dunno about this
 		buffer.writeBytes(stream);
 	}
 
@@ -98,4 +102,36 @@ void CodeTable::writeEOF(ByteBuffer & buffer, std::ofstream & stream)
 {
 	buffer.addBits(codeEOF, lengthEOF);
 	buffer.writeBytes(stream, true);
+}
+
+// Reconstruct table from header of encoded file
+bool CodeTable::initializeFromFileHeader(string & fileName) {
+	// Attempt to open file
+	ifstream file(fileName, ios::in | ios::binary | ios::ate);
+	char nextByte;
+	if (file.is_open()) {
+		file.seekg(0, ios::beg);
+		int i = 0;
+		while (file.tellg() < maxAlphabetSize) {
+			file.get(nextByte);
+			lengths[i] = char2index(nextByte);
+			//cout << i << ":\tReceived " << char2index(nextByte) <<
+			//	" from file stream" << endl;
+			i++;
+		}
+		file.get(nextByte);
+		leastLikelyIdx = char2index(nextByte);
+		
+		file.close();
+
+		cout << "\"Least likely\" symbol: " << leastLikelyIdx << " (" <<
+			index2char(leastLikelyIdx) << ")" << endl;
+
+		standardizeAndSetEOF();
+		return true;
+	}
+	else {
+		return false;
+	}
+
 }
