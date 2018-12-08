@@ -64,7 +64,7 @@ void CodeTable::standardizeAndSetEOF() {
 
 	// Modify the tree slightly to include an EOF code
 	// by splitting the "least likely" node
-	leastLikelyIdx = indexes[255]; 
+	if (leastLikelyIdx==-1) leastLikelyIdx = indexes[255]; 
 
 	//cout << "\"Least likely\" symbol (standardize function): " << leastLikelyIdx << " (" <<
 	//	index2char(leastLikelyIdx) << ")" << endl;
@@ -134,4 +134,34 @@ bool CodeTable::initializeFromFileHeader(string & fileName) {
 		return false;
 	}
 
+}
+
+int CodeTable::matchCode(unsigned long long code, int codeLength)
+{
+	if ((code == codeEOF) && (codeLength == lengthEOF))
+		return 256;
+
+	int matchIdx = -1;
+
+	if (!sortedIndexesAvailable) {
+		mySort(lengths, sortedIndexes, maxAlphabetSize, true);
+		sortedIndexesAvailable = true;
+	}
+
+	// maybe we should save actual alphabet size somewhere so
+	// we don't have to step through a bunch of zeros here,
+	// or think of some other more efficient solution
+	// (maybe create some kind of "lookup table" for the lengths?)
+	int currentIdx = 0;
+	while (lengths[sortedIndexes[currentIdx]] < codeLength)
+		currentIdx++;
+
+	while ((lengths[sortedIndexes[currentIdx]] == codeLength)
+			&&(matchIdx==-1)) {
+		if (codes[sortedIndexes[currentIdx]] == code)
+			matchIdx = sortedIndexes[currentIdx];
+		currentIdx++;
+	}
+
+	return matchIdx;
 }

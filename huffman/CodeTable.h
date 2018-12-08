@@ -11,6 +11,8 @@ private:
 	unsigned long long codeEOF = 0;
 	int lengthEOF = 0;
 	int leastLikelyIdx = -1;
+	int sortedIndexes[maxAlphabetSize];
+	bool sortedIndexesAvailable = false;
 	void printLine(int index);
 
 public:
@@ -23,6 +25,7 @@ public:
 	void writeEOF(ByteBuffer& buffer, std::ofstream& stream);
 	void setCode(int index, unsigned long long code, int codeLength);
 	bool initializeFromFileHeader(std::string &fileName);
+	int matchCode(unsigned long long code, int codeLength);
 };
 
 #endif

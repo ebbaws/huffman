@@ -29,6 +29,16 @@ bool decode(string & inputFilePath, string & outputFilePath) {
 	bool res = table.initializeFromFileHeader(inputFilePath);
 	if (!res) return false;
 
+	int codeIdx = table.matchCode(1112, 7);
+	if ((codeIdx>=0)&&(codeIdx<maxAlphabetSize)) {
+		cout << "Found code for " << index2char(codeIdx) << endl;
+	}
+	else {
+		cout << "No code found" << endl;
+	}
+
+	return true;
+
 	/*
 	ifstream::pos_type size;
 	char * memblock;
