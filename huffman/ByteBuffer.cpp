@@ -51,7 +51,7 @@ void ByteBuffer::writeBytes(std::ofstream& stream,
 
 	if (writeUnfinished&&(currentBit!=0)) {
 		// Also write the incomplete byte at the end
-		stream.write(&bytes[0], currentByte);
+		stream.write(&bytes[0], 1);
 		currentBit = 0;
 	}
 }

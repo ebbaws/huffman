@@ -52,6 +52,9 @@ int Decoder::getNextCode(ifstream & stream)
 		// Get new byte from stream if necessary
 		if (currentBitPosition > 7) {
 			//cout << "Reading new byte from stream" << endl;
+			// For some reason we can't read the last byte.
+			// that may be because it's missing (bug in encoder)
+			// or because i don't understand how the get method works.
 			if (stream.get(latestByte)) {
 				currentBitPosition = 0;
 			}
@@ -108,7 +111,7 @@ bool Decoder::decode()
 			//cout << index2char(nextCode);
 
 			if (nextCode == -1) {
-				cout << "Could not read valid code" << endl;
+				cout << "Could not read valid code in iteration " << j << endl;
 				break;
 			}
 
@@ -118,10 +121,10 @@ bool Decoder::decode()
 			}
 
 			j++;
-			if (j == 728) {
-				cout << "Something is about to go wrong" << endl;
-			}
 
+			if (j == 125179) {
+				cout << "decoded: " << index2char(nextCode) << "(newline?)" << endl;
+			}
 		}
 
 
