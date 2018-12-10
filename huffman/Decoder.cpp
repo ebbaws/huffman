@@ -52,9 +52,6 @@ int Decoder::getNextCode(ifstream & stream)
 		// Get new byte from stream if necessary
 		if (currentBitPosition > 7) {
 			//cout << "Reading new byte from stream" << endl;
-			// For some reason we can't read the last byte.
-			// that may be because it's missing (bug in encoder)
-			// or because i don't understand how the get method works.
 			if (stream.get(latestByte)) {
 				currentBitPosition = 0;
 			}
@@ -89,6 +86,8 @@ bool Decoder::decode()
 	ifstream file(inputFilePath, ios::in | ios::binary | ios::ate);
 	if (file.is_open()) {
 
+		ofstream fout(outputFilePath, ios::binary);
+
 		currentBitPosition = 0;
 
 		// Set read position to beginning of file body
@@ -110,24 +109,24 @@ bool Decoder::decode()
 			nextCode = getNextCode(file);
 			//cout << index2char(nextCode);
 
-			if (nextCode == -1) {
+			if (nextCode<0||nextCode>256) {
 				cout << "Could not read valid code in iteration " << j << endl;
 				break;
 			}
-
-			if (nextCode == 256) {
+			else if (nextCode == 256) {
 				cout << "Read end-of-file code" << endl;
 				break;
+			}
+			else {
+				char decodedChar = index2char(nextCode);
+				fout.write(&decodedChar, 1);
 			}
 
 			j++;
 
-			if (j == 125179) {
-				cout << "decoded: " << index2char(nextCode) << "(newline?)" << endl;
-			}
 		}
 
-
+		fout.close();
 		file.close();
 
 	} else return false;
