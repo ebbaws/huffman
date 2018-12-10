@@ -158,10 +158,36 @@ int CodeTable::matchCode(unsigned long long code, int codeLength)
 
 	while ((lengths[sortedIndexes[currentIdx]] == codeLength)
 			&&(matchIdx==-1)) {
-		if (codes[sortedIndexes[currentIdx]] == code)
+		if (codes[sortedIndexes[currentIdx]] == code) {
 			matchIdx = sortedIndexes[currentIdx];
+			break; // prevent out-of-range issues
+		}
 		currentIdx++;
 	}
 
 	return matchIdx;
+}
+
+int CodeTable::getMinLength()
+{
+	if (!sortedIndexesAvailable) {
+		mySort(lengths, sortedIndexes, maxAlphabetSize, true);
+		sortedIndexesAvailable = true;
+	}
+
+	int currentIdx = 0;
+	while (lengths[sortedIndexes[currentIdx]] == 0)
+		currentIdx++;
+
+	return lengths[sortedIndexes[currentIdx]];
+}
+
+int CodeTable::getMaxLength()
+{
+	if (!sortedIndexesAvailable) {
+		mySort(lengths, sortedIndexes, maxAlphabetSize, true);
+		sortedIndexesAvailable = true;
+	}
+
+	return lengths[sortedIndexes[maxAlphabetSize-1]];
 }

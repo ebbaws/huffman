@@ -6,12 +6,36 @@
 #include "HuffmanTree.h"
 #include "HuffmanEncoder.h"
 #include "ByteBuffer.h"
+#include "Decoder.h"
 using namespace std;
 
 string infilename = "C:\\learn\\cantrbry\\asyoulik.txt";
 string outfilename = "output.huff";
 
 char myLine[100];
+
+/*
+int getBit(char bits, int bitPtr) {
+	if (bitPtr > -1 && bitPtr < 8) {
+		char bitmask = 128 >> bitPtr;
+		return ((bits & bitmask) == 0) ? 0 : 1;
+	}
+	else {
+		return -1;
+	}
+}
+
+
+void testGetBit() {
+	int value = 0b10100100;
+	char bits = index2char(value);
+	for (int bitPtr=0; bitPtr<8; bitPtr++) {
+		cout << getBit(bits, bitPtr);
+	}
+	cout << endl;
+}
+
+*/
 
 bool encode(string & inputFilePath, string & outputFilePath) {
 	HuffmanEncoder encoder;
@@ -22,45 +46,21 @@ bool encode(string & inputFilePath, string & outputFilePath) {
 }
 
 bool decode(string & inputFilePath, string & outputFilePath) {
-	// start working on the decoder here
-
-	CodeTable table;
 	
-	bool res = table.initializeFromFileHeader(inputFilePath);
-	if (!res) return false;
+	Decoder decoder;
+	decoder.setInputFile(inputFilePath);
+	decoder.setOutputFile(outputFilePath);
 
-	int codeIdx = table.matchCode(1112, 7);
-	if ((codeIdx>=0)&&(codeIdx<maxAlphabetSize)) {
-		cout << "Found code for " << index2char(codeIdx) << endl;
-	}
-	else {
-		cout << "No code found" << endl;
-	}
+	return decoder.decode();
 
-	return true;
+}
 
-	/*
-	ifstream::pos_type size;
-	char * memblock;
-	int split, alphsize;
-	ifstream file(inputFilePath, ios::in | ios::binary | ios::ate);
-	if (file.is_open())
-	{
-		size = file.tellg();
-		memblock = new char[(int)size];
-		file.seekg(0, ios::beg);
-		file.read(memblock, size);
-		file.close();
-		CodeTable table;
+void testDecode() {
+	encode(infilename, outfilename);
 
+	string decoderOutputFile = "asyoulik_decoded.txt";
 
-	}
-	else {
-		cout << "Unable to open file.";
-		return false;
-	}
-	*/
-
+	decode(outfilename, decoderOutputFile);
 }
 
 int main (int argc, char *argv[])  {
@@ -88,15 +88,7 @@ int main (int argc, char *argv[])  {
 	}
 	*/
 
-	encode(infilename, outfilename);
-	
-	string decoderOutputFile = "asyoulik_decoded.txt";
-	
-	decode(outfilename, decoderOutputFile);
-
-	//return decode(inputFile, outputFile) ? 0 : -1;
-
-
+	testDecode();
 }
 
 

@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="ByteBuffer.cpp" />
     <ClCompile Include="CodeTable.cpp" />
+    <ClCompile Include="Decoder.cpp" />
     <ClCompile Include="huffman2.cpp" />
     <ClCompile Include="HuffmanEncoder.cpp" />
     <ClCompile Include="HuffmanTree.cpp" />
@@ -161,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="ByteBuffer.h" />
     <ClInclude Include="CodeTable.h" />
+    <ClInclude Include="Decoder.h" />
     <ClInclude Include="HuffmanEncoder.h" />
     <ClInclude Include="misc.h" />
     <ClInclude Include="HuffmanTree.h" />

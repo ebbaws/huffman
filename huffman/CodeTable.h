@@ -14,6 +14,10 @@ private:
 	int sortedIndexes[maxAlphabetSize];
 	bool sortedIndexesAvailable = false;
 	void printLine(int index);
+	//bool isReady = false;
+	//int codeLengthLookup[maxAlphabetSize];
+	//int minLength;
+	//int maxLength;
 
 public:
 	CodeTable(); 
@@ -26,6 +30,8 @@ public:
 	void setCode(int index, unsigned long long code, int codeLength);
 	bool initializeFromFileHeader(std::string &fileName);
 	int matchCode(unsigned long long code, int codeLength);
+	int getMinLength();
+	int getMaxLength();
 };
 
 #endif
