@@ -27,11 +27,29 @@ bool decode(string & inputFilePath, string & outputFilePath) {
 
 }
 
+bool test(string & inputFilePath) {
+	string encodedFilePath = "encoded.huff";
+	string decodedFilePath = "decoded.huff";
+	if (encode(inputFilePath, encodedFilePath)&&
+		decode(encodedFilePath, decodedFilePath)) {
+
+		return (compareFiles(inputFilePath, decodedFilePath));
+
+	}
+	else {
+		cout << "Couldn't finish test" << endl;
+		return false;
+	}
+
+}
+
 
 void printUsageInstructions() {
 	cout << "Please specify an input file name" << endl;
 	cout << "For decode mode, write -decode" << endl;
-	cout << "Output file name can also be specified after input file name" << endl;
+	cout << "For test mode, write -test" << endl;
+	cout << "Output file name (for decode or encode mode)" <<
+		" can also be specified after input file name" << endl;
 }
 
 int main (int argc, char *argv[])  {
@@ -39,6 +57,7 @@ int main (int argc, char *argv[])  {
 	string outputFileName = "output.huff";
 
 	bool decodeMode = false;
+	bool testMode = false;
 	bool result = false;
 
 	if (argc > 1) {
@@ -47,8 +66,11 @@ int main (int argc, char *argv[])  {
 
 			if (argv[i][0] == '-') {
 				string decodeString = "-decode";
+				string testString = "-test";
 				if (!argString.compare(decodeString)) {
 					decodeMode = true;
+				} else if (!argString.compare(testString)) {
+					testMode = true;
 				}
 				else {
 					cout << "Invalid option" << endl;
@@ -69,6 +91,11 @@ int main (int argc, char *argv[])  {
 
 	if (inputFileName == "") {
 		printUsageInstructions();
+	}
+	else if (testMode) {
+		cout << "Input file name: " << inputFileName << endl;
+		cout << "Starting the test" << endl;
+		result = test(inputFileName);
 	}
 	else {
 		cout << "Input file name: " << inputFileName << endl;

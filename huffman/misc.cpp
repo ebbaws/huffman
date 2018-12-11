@@ -1,3 +1,8 @@
+#include <string>
+#include <fstream>
+#include <iostream>
+using namespace std;
+
 // Function to convert a char (range -128 to 127) into an index
 // (range 0-255)
 int char2index(char c)
@@ -73,4 +78,67 @@ void mySort(int *values, int *indexes, int length, bool ascending = false) {
 			swapIdx--;
 		}
 	}
+}
+
+bool compareFiles(string & fileName1, string & fileName2) {
+	ifstream file1(fileName1, ios::in | ios::binary | ios::ate);
+	ifstream file2(fileName2, ios::in | ios::binary | ios::ate);
+
+	if (file1.is_open() && file2.is_open()) {
+
+		file1.seekg(0, ios::beg);
+		file2.seekg(0, ios::beg);
+
+		char byte1, byte2;
+
+		bool success = false;
+
+		while (true) {
+			file1.get(byte1);
+			file2.get(byte2);
+
+			if (byte1 != byte2) {
+				cout << "Found inconsistency" << endl;
+				break;
+			}
+
+			
+			if (file1.eof()) {
+				if (file2.eof()) {
+					success = true;
+				}
+				else {
+					cout << fileName1 << " ended before " << fileName2 << "!" << endl;
+				}
+				break;
+			}
+
+			if (file2.eof()) {
+				if (file2.eof()) {
+					success = true;
+				}
+				else {
+					cout << fileName2 << " ended before " << fileName1 << "!" << endl;
+				}
+
+				break;
+			}
+		}
+		
+		file1.close();
+		file2.close();
+
+		if (success) {
+			cout << "Reached end of both files with no inconsistencies" << endl;
+		}
+		
+		return success;
+
+	}
+	else {
+		cout << "At least one of the files is unreadable" << endl;
+		return false;
+	}
+
+
 }

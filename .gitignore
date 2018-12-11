@@ -261,3 +261,5 @@ __pycache__/
 *.pyc
 /huffman/output.huff
 /huffman/asyoulik_decoded.txt
+/huffman/decoded.huff
+/huffman/encoded.huff
