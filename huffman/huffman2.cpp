@@ -9,12 +9,6 @@
 #include "Decoder.h"
 using namespace std;
 
-string infilename = "C:\\learn\\cantrbry\\asyoulik.txt";
-string outfilename = "output.huff";
-
-//char myLine[100];
-
-
 bool encode(string & inputFilePath, string & outputFilePath) {
 	HuffmanEncoder encoder;
 	encoder.setInputFile(inputFilePath);
@@ -33,13 +27,6 @@ bool decode(string & inputFilePath, string & outputFilePath) {
 
 }
 
-void testDecode() {
-	encode(infilename, outfilename);
-
-	string decoderOutputFile = "asyoulik_decoded.txt";
-
-	decode(outfilename, decoderOutputFile);
-}
 
 void printUsageInstructions() {
 	cout << "Please specify an input file name" << endl;
@@ -52,6 +39,7 @@ int main (int argc, char *argv[])  {
 	string outputFileName = "output.huff";
 
 	bool decodeMode = false;
+	bool result = false;
 
 	if (argc > 1) {
 		for (int i = 1; i < argc; i++) {
@@ -86,11 +74,15 @@ int main (int argc, char *argv[])  {
 		cout << "Input file name: " << inputFileName << endl;
 		cout << "Output file name: " << outputFileName << endl;
 		if (decodeMode) {
-			cout << "Decode mode" << endl;
+			cout << "Starting decoding" << endl;
+			result = decode(inputFileName, outputFileName);
 		}
 		else {
 			cout << "Encode mode" << endl;
+			result = encode(inputFileName, outputFileName);
 		}
 	}
+
+	return result ? 0 : -1;
 
 }
