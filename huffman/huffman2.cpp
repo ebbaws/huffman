@@ -12,30 +12,8 @@ using namespace std;
 string infilename = "C:\\learn\\cantrbry\\asyoulik.txt";
 string outfilename = "output.huff";
 
-char myLine[100];
+//char myLine[100];
 
-/*
-int getBit(char bits, int bitPtr) {
-	if (bitPtr > -1 && bitPtr < 8) {
-		char bitmask = 128 >> bitPtr;
-		return ((bits & bitmask) == 0) ? 0 : 1;
-	}
-	else {
-		return -1;
-	}
-}
-
-
-void testGetBit() {
-	int value = 0b10100100;
-	char bits = index2char(value);
-	for (int bitPtr=0; bitPtr<8; bitPtr++) {
-		cout << getBit(bits, bitPtr);
-	}
-	cout << endl;
-}
-
-*/
 
 bool encode(string & inputFilePath, string & outputFilePath) {
 	HuffmanEncoder encoder;
@@ -63,72 +41,56 @@ void testDecode() {
 	decode(outfilename, decoderOutputFile);
 }
 
+void printUsageInstructions() {
+	cout << "Please specify an input file name" << endl;
+	cout << "For decode mode, write -decode" << endl;
+	cout << "Output file name can also be specified after input file name" << endl;
+}
+
 int main (int argc, char *argv[])  {
-	/*
+	string inputFileName = "";
+	string outputFileName = "output.huff";
+
+	bool decodeMode = false;
+
 	if (argc > 1) {
-		int fileNameLength = strlen(argv[1]);
+		for (int i = 1; i < argc; i++) {
+			string argString(argv[i], strlen(argv[i]));
 
-		if (fileNameLength > 0) {
-			string inputFile(argv[1], fileNameLength);
-			cout << "File name: " << inputFile << endl;
-			string outputFile = "output.huff";
-			if (encode(inputFile, outputFile)) {
-				cout << "Name of encoded file: " << outputFile << endl;
+			if (argv[i][0] == '-') {
+				string decodeString = "-decode";
+				if (!argString.compare(decodeString)) {
+					decodeMode = true;
+				}
+				else {
+					cout << "Invalid option" << endl;
+				}
+
+			} else {
+				if (inputFileName == "") { 
+					inputFileName = argString;
+				}
+				else {
+					outputFileName = argString;
+				}
+			
 			}
-			else {
-				cout << "Encoding failed" << endl;
-			}
 
+		}
+	}
 
+	if (inputFileName == "") {
+		printUsageInstructions();
+	}
+	else {
+		cout << "Input file name: " << inputFileName << endl;
+		cout << "Output file name: " << outputFileName << endl;
+		if (decodeMode) {
+			cout << "Decode mode" << endl;
 		}
 		else {
-			cout << "Please specify file name" << endl;
+			cout << "Encode mode" << endl;
 		}
-
 	}
-	*/
-
-	testDecode();
-}
-
-
-/*
-void testSort() {
-	int values[10] = { 19, -4, 6, 23, 108, -11, 78, 90, 24, 35 };
-	int indexes[10];
-	mySort(values, indexes, 10);
-
-	for (int i = 0; i < 10; i++) {
-		cout << values[indexes[i]] << " ";
-	}
-}
-
-void testByteBuffer() {
-	string fileName = "testfile";
-	ByteBuffer buffer = ByteBuffer();
-	ofstream outputStream(fileName, ios::binary);
-	buffer.addBits(255, 8);
-	buffer.print();
-	buffer.addBits(0, 4);
-	buffer.print();
-	buffer.addBits(63, 6);
-	buffer.print();
-	buffer.addBits(0, 1);
-	buffer.print();
-	buffer.addBits(3, 2);
-	buffer.print();
-	buffer.addBits(2, 3);
-	buffer.print();
-
-	unsigned long long superLongCode = 0x97ffffffff;
-
-	buffer.addBits(superLongCode, 40);
-	buffer.print();
-
-	buffer.writeBytes(outputStream);
-	outputStream.close();
-	buffer.print();
 
 }
-
-*/
