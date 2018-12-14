@@ -56,9 +56,7 @@ void CodeTable::standardizeAndSetEOF() {
 		oldLength = thisLength;
 		thisLength = lengths[indexes[currentIdx]];
 		code = code + 1;
-		// could the below line be changed to left shift instead?
-		// also that cast is probly not good
-		code = code * (int)pow(2.0, (thisLength - oldLength)); 
+		code = code << (thisLength - oldLength);
 		codes[indexes[currentIdx]] = code;
 	}
 

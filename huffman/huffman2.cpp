@@ -58,6 +58,7 @@ int main (int argc, char *argv[])  {
 
 	bool decodeMode = false;
 	bool testMode = false;
+	bool testSortMode = false;
 	bool result = false;
 
 	if (argc > 1) {
@@ -67,10 +68,15 @@ int main (int argc, char *argv[])  {
 			if (argv[i][0] == '-') {
 				string decodeString = "-decode";
 				string testString = "-test";
+				string testSortString = "-testsort";
+				
 				if (!argString.compare(decodeString)) {
 					decodeMode = true;
 				} else if (!argString.compare(testString)) {
 					testMode = true;
+				}
+				else if (!argString.compare(testSortString)) {
+					testSortMode = true;
 				}
 				else {
 					cout << "Invalid option" << endl;
@@ -87,6 +93,11 @@ int main (int argc, char *argv[])  {
 			}
 
 		}
+	}
+
+	if (testSortMode) {
+		testSort();
+		return 0;
 	}
 
 	if (inputFileName == "") {

@@ -12,5 +12,6 @@ int char2index(char c);
 char index2char(int index);
 void mySort(int *values, int *indexes, int length, bool ascending = false);
 bool compareFiles(std::string & fileName1, std::string & fileName2);
+void testSort();
 
 #endif

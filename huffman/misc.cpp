@@ -22,14 +22,20 @@ char index2char(int index)
 	return (char)index;
 }
 
-void doSort(int *values, int *indexes, int start, int end, bool init) {
-	if (init) {
-		// Initialize indexes
-		for (int i = 0; i <= end; i++) {
-			*(indexes + i) = i;
-		}
-	}
+bool compare(int pivotVal, int compareVal, int pivotIdx, int compareIdx) {
 
+	if (compareVal > pivotVal) {
+		return true;
+	}
+	else if (compareVal == pivotVal) {
+		return (compareIdx < pivotIdx);
+	}
+	else return false;
+
+}
+
+void doSort(int *values, int *indexes, int start, int end)
+{
 	if (start < end) {
 		int pivotIdx = indexes[start];
 		int pivotVal = values[pivotIdx];
@@ -40,7 +46,8 @@ void doSort(int *values, int *indexes, int start, int end, bool init) {
 		for (int j = 0; j < (end - start); j++) {
 			compareIdx = indexes[pivotPos + 1];
 			compareVal = values[compareIdx];
-			if (compareVal > pivotVal) {
+			if (compare(pivotVal, compareVal, pivotIdx, compareIdx))
+			{
 				indexes[pivotPos] = compareIdx;
 				pivotPos++;
 			}
@@ -51,8 +58,8 @@ void doSort(int *values, int *indexes, int start, int end, bool init) {
 			}
 		}
 		indexes[pivotPos] = pivotIdx;
-		doSort(values, indexes, start, pivotPos - 1, false);
-		doSort(values, indexes, pivotPos + 1, end, false);
+		doSort(values, indexes, start, pivotPos - 1);
+		doSort(values, indexes, pivotPos + 1, end);
 		return;
 	}
 	else {
@@ -61,23 +68,78 @@ void doSort(int *values, int *indexes, int start, int end, bool init) {
 
 }
 
+void flip(int *myArray, int start, int end) {
+	int idx = start;
+	int swapIdx = end;
+	while (idx < swapIdx) {
+		int swapValue = myArray[swapIdx];
+		myArray[swapIdx] = myArray[idx];
+		myArray[idx] = swapValue;
+		idx++;
+		swapIdx--;
+	}
+
+}
+
+
 // Puts indexes, sorted based on provided values, in array indicated by
 // indexes argument (doesn't have to be initialized in advance,
 // just provide a valid pointer)
+// In case of equality between values, the original order of indexes
+// will be preserved.
 void mySort(int *values, int *indexes, int length, bool ascending = false) {
-	doSort(values, indexes, 0, length - 1, true);
-	if (ascending) {
-		// Flip the indexes
-		int idx = 0;
-		int swapIdx = length-1;
-		while (idx < swapIdx) {
-			int swapValue = indexes[swapIdx];
-			indexes[swapIdx] = indexes[idx];
-			indexes[idx] = swapValue;
-			idx++;
-			swapIdx--;
-		}
+	// Initialize indexes
+	for (int i = 0; i < length; i++) {
+		indexes[i] = i;
 	}
+	
+	doSort(values, indexes, 0, length - 1);
+
+	if (ascending) {
+		
+		// Flip all indexes
+		flip(indexes, 0, length - 1);
+
+		// Flip the indexes within clusters of same value
+		bool repeating = false;
+		int repeatStart, repeatEnd;
+		for (int i = 1; i < length; i++) {
+			if (values[indexes[i]] == values[indexes[i - 1]]) {
+				if (!repeating) {
+					repeating = true;
+					repeatStart = i - 1;
+				}
+				
+				if (repeating&&(i == length - 1)) {
+					repeatEnd = i;
+					flip(indexes, repeatStart, repeatEnd);
+				}
+			}
+			else {
+				if (repeating) {
+					repeating = false;
+					repeatEnd = i - 1;
+					flip(indexes, repeatStart, repeatEnd);
+				}
+			}
+
+		}
+		
+	}
+
+	cout << "Sorted the indexes" << endl;
+	for (int i = 0; i < length; i++) {
+		cout << indexes[i] << "\t" << values[indexes[i]] << endl;
+
+	}
+
+}
+
+void testSort() {
+	int indexes[10];
+	int values[10] = { 0, 4, 3, 0, 3, 0, 3, 0, 3, 4 };
+	mySort(values, indexes, 10, true);
+
 }
 
 bool compareFiles(string & fileName1, string & fileName2) {
