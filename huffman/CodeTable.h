@@ -10,7 +10,7 @@ private:
 	int lengths[maxAlphabetSize];
 	unsigned long long codeEOF = 0;
 	int lengthEOF = 0;
-	int leastLikelyIdx = -1;
+	//int leastLikelyIdx = -1;
 	int sortedIndexes[maxAlphabetSize];
 	bool sortedIndexesAvailable = false;
 	void printLine(int index);

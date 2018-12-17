@@ -127,11 +127,11 @@ void mySort(int *values, int *indexes, int length, bool ascending = false) {
 		
 	}
 
-	cout << "Sorted the indexes" << endl;
-	for (int i = 0; i < length; i++) {
-		cout << indexes[i] << "\t" << values[indexes[i]] << endl;
+	//cout << "Sorted the indexes" << endl;
+	//for (int i = 0; i < length; i++) {
+	//	cout << indexes[i] << "\t" << values[indexes[i]] << endl;
 
-	}
+	//}
 
 }
 
@@ -160,7 +160,8 @@ bool compareFiles(string & fileName1, string & fileName2) {
 			file2.get(byte2);
 
 			if (byte1 != byte2) {
-				cout << "Found inconsistency" << endl;
+				cout << "Found inconsistency, current position: " <<
+					file1.tellg() << endl;
 				break;
 			}
 
@@ -176,13 +177,7 @@ bool compareFiles(string & fileName1, string & fileName2) {
 			}
 
 			if (file2.eof()) {
-				if (file2.eof()) {
-					success = true;
-				}
-				else {
-					cout << fileName2 << " ended before " << fileName1 << "!" << endl;
-				}
-
+				cout << fileName2 << " ended before " << fileName1 << "!" << endl;
 				break;
 			}
 		}

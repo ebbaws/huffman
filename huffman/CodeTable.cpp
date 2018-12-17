@@ -37,16 +37,16 @@ void CodeTable::setCode(int index, unsigned long long code, int codeLength) {
 // need the code lengths as side info for decoding.
 // Also, add a valid end-of-file (EOF) code to this table.
 void CodeTable::standardizeAndSetEOF() {
-	int indexes[maxAlphabetSize];
-	mySort(lengths, indexes, maxAlphabetSize, true);
+	mySort(lengths, sortedIndexes, maxAlphabetSize, true);
+	sortedIndexesAvailable = true;
 
 	int currentIdx = 0;
-	while (lengths[indexes[currentIdx]] == 0) currentIdx++;
+	while (lengths[sortedIndexes[currentIdx]] == 0) currentIdx++;
 
 	unsigned long long code = 0;
-	codes[indexes[currentIdx]] = code;
+	codes[sortedIndexes[currentIdx]] = code;
 
-	int thisLength = lengths[indexes[currentIdx]];
+	int thisLength = lengths[sortedIndexes[currentIdx]];
 	int oldLength;
 
 	currentIdx++;
@@ -54,23 +54,21 @@ void CodeTable::standardizeAndSetEOF() {
 	for (currentIdx; currentIdx < maxAlphabetSize; currentIdx++)
 	{
 		oldLength = thisLength;
-		thisLength = lengths[indexes[currentIdx]];
+		thisLength = lengths[sortedIndexes[currentIdx]];
 		code = code + 1;
 		code = code << (thisLength - oldLength);
-		codes[indexes[currentIdx]] = code;
+		codes[sortedIndexes[currentIdx]] = code;
 	}
 
 	// Modify the tree slightly to include an EOF code
 	// by splitting the "least likely" node
-	if (leastLikelyIdx==-1) leastLikelyIdx = indexes[255]; 
-
-	//cout << "\"Least likely\" symbol (standardize function): " << leastLikelyIdx << " (" <<
-	//	index2char(leastLikelyIdx) << ")" << endl;
+	int leastLikelyIdx = sortedIndexes[255]; // !!!!!!
 
 	codes[leastLikelyIdx] = 2 * codes[leastLikelyIdx];
 	lengths[leastLikelyIdx]++;
 	codeEOF = codes[leastLikelyIdx] + 1;
 	lengthEOF = lengths[leastLikelyIdx];
+	//print();
 }
 
 void CodeTable::writeSideInfo(ByteBuffer & buffer, std::ofstream& stream)
@@ -78,15 +76,13 @@ void CodeTable::writeSideInfo(ByteBuffer & buffer, std::ofstream& stream)
 	// Write code lengths as they were before the EOF code was added
 	for (int i = 0; i < maxAlphabetSize; i++) {
 		int currentLength = lengths[i];
-		if (i == leastLikelyIdx)
+		if (i == sortedIndexes[255])
 			currentLength = currentLength - 1;
+
+		// the buffer is probably kind of unnecessary?
 		buffer.addBits(currentLength, 8); // dunno about this
 		buffer.writeBytes(stream);
 	}
-
-	// Write index of least likely node as well, so the EOF code
-	// can be reconstructed
-	buffer.addBits(leastLikelyIdx, 8);
 
 }
 
@@ -117,13 +113,8 @@ bool CodeTable::initializeFromFileHeader(string & fileName) {
 			//	" from file stream" << endl;
 			i++;
 		}
-		file.get(nextByte);
-		leastLikelyIdx = char2index(nextByte);
 		
 		file.close();
-
-		cout << "\"Least likely\" symbol: " << leastLikelyIdx << " (" <<
-			index2char(leastLikelyIdx) << ")" << endl;
 
 		standardizeAndSetEOF();
 		return true;

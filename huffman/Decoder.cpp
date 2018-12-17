@@ -91,8 +91,8 @@ bool Decoder::decode()
 		currentBitPosition = 0;
 
 		// Set read position to beginning of file body
-		// (first 257 bytes are code table data)
-		file.seekg(257);
+		// (first 256 bytes are code table data)
+		file.seekg(256);
 		if (file.get(latestByte)) {
 			cout << "Read " << char2index(latestByte) << " from stream" << endl;
 		}
@@ -107,7 +107,6 @@ bool Decoder::decode()
 		int j = 0;
 		while (true) {
 			nextCode = getNextCode(file);
-			//cout << index2char(nextCode);
 
 			if (nextCode<0||nextCode>256) {
 				cout << "Could not read valid code in iteration " << j << endl;

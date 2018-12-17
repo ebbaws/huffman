@@ -93,6 +93,11 @@ bool HuffmanEncoder::encode() {
 		// Encode and write to file
 		for (int j = 0; j < size; j++)
 		{
+			//if (j < 10) {
+			//	cout << "writing code for symbol " << char2index(memblock[j]) <<
+			//		" (" << memblock[j] << ")" << endl;
+			//}
+			
 			codeTable.writeCode(char2index(memblock[j]),
 				buffer, outputStream);
 		}
