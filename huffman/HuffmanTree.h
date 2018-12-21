@@ -11,14 +11,13 @@ private:
 	int treeSize = 0;
 	int alphabetSize = 0;
 	int mTreeTable[maxTreeSize][2];
-	void exploreNode(int nodeID, unsigned long long code,
-		int length, CodeTable& codeTable);
+	void exploreNode(int nodeID, int length, CodeTable& codeTable);
 
 public:
 	HuffmanTree();
 	~HuffmanTree();
 	bool build(int *charStats, bool verbose = false);
-	void writeCodes(CodeTable& codeTable);
+	void writeCodeLengths(CodeTable& codeTable);
 	void print();
 };
 

@@ -62,7 +62,7 @@ bool HuffmanEncoder::encode() {
 	tree.build(charStats);
 
 	CodeTable codeTable = CodeTable();
-	tree.writeCodes(codeTable);
+	tree.writeCodeLengths(codeTable);
 
 	cout << "Standardizing code table" << endl;
 	//codeTable.print();

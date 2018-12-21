@@ -28,8 +28,14 @@ void CodeTable::print() {
 	}
 }
 
+// to modify this for the new code representation,
+// just change type of input code to vector<bool>
 void CodeTable::setCode(int index, unsigned long long code, int codeLength) {
 	codes[index] = code;
+	lengths[index] = codeLength;
+}
+
+void CodeTable::setLength(int index, int codeLength) {
 	lengths[index] = codeLength;
 }
 
@@ -51,6 +57,8 @@ void CodeTable::standardizeAndSetEOF() {
 
 	currentIdx++;
 
+	// If we want each code represented as a vector<char>
+	// we have to find a way to do those shift operations
 	for (currentIdx; currentIdx < maxAlphabetSize; currentIdx++)
 	{
 		oldLength = thisLength;
@@ -86,6 +94,8 @@ void CodeTable::writeSideInfo(ByteBuffer & buffer, std::ofstream& stream)
 
 }
 
+// For new code representation the addBits method in ByteBuffer
+// will have to change...
 void CodeTable::writeCode(int index, ByteBuffer & buffer, std::ofstream & stream)
 {
 	buffer.addBits(codes[index], lengths[index]);

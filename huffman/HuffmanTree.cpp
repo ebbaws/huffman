@@ -3,20 +3,20 @@
 #include "misc.h"
 using namespace std;
 
-void HuffmanTree::exploreNode(int nodeID, unsigned long long code,
-	int length, CodeTable & codeTable)
+void HuffmanTree::exploreNode(int nodeID, int length, CodeTable & codeTable)
 {
 	int leftID = mTreeTable[nodeID][0];
 	int rightID = mTreeTable[nodeID][1];
 	
 	if ((leftID == -1) && (rightID == -1)) {
 		// Node is leaf; write code to table
-		codeTable.setCode(nodeID, code, length);
+		//codeTable.setCode(nodeID, code, length);
+		codeTable.setLength(nodeID, length);
 	}
 	else {
 		// Explore children
-		exploreNode(leftID, code * 2, length + 1, codeTable);
-		exploreNode(rightID, code * 2 + 1, length + 1, codeTable);
+		exploreNode(leftID, length + 1, codeTable);
+		exploreNode(rightID, length + 1, codeTable);
 	}
 
 }
@@ -91,7 +91,8 @@ bool HuffmanTree::build(int *charStats, bool verbose) {
 			// Step through indexes vector and move the new node to the left
 			// until the nodes are sorted by weight again
 			int currentIndex = end - 1;
-			while ((currentIndex >= 0) && (nodeWeights[treeSize] > nodeWeights[indexes[currentIndex]]))
+			while ((currentIndex >= 0) &&
+				(nodeWeights[treeSize] > nodeWeights[indexes[currentIndex]]))
 			{
 				indexes[currentIndex + 1] = indexes[currentIndex];
 				indexes[currentIndex] = treeSize;
@@ -110,9 +111,9 @@ bool HuffmanTree::build(int *charStats, bool verbose) {
 	return true;
 }
 
-void HuffmanTree::writeCodes(CodeTable &codeTable)
+void HuffmanTree::writeCodeLengths(CodeTable &codeTable)
 {
-	exploreNode(treeSize - 1, 0, 0, codeTable);
+	exploreNode(treeSize - 1, 0, codeTable);
 }
 
 void HuffmanTree::print()

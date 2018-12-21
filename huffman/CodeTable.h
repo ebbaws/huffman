@@ -14,6 +14,11 @@ private:
 	int sortedIndexes[maxAlphabetSize];
 	bool sortedIndexesAvailable = false;
 	void printLine(int index);
+
+	// Idea for different representation for the codes
+	//vector<bool> codes[maxAlphabetSize];
+	
+	// Some ideas for making code identification faster
 	//bool isReady = false;
 	//int codeLengthLookup[maxAlphabetSize];
 	//int minLength;
@@ -28,6 +33,7 @@ public:
 	void writeCode(int index, ByteBuffer& buffer, std::ofstream& stream);
 	void writeEOF(ByteBuffer& buffer, std::ofstream& stream);
 	void setCode(int index, unsigned long long code, int codeLength);
+	void setLength(int index, int codeLength);
 	bool initializeFromFileHeader(std::string &fileName);
 	int matchCode(unsigned long long code, int codeLength);
 	int getMinLength();
