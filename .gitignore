@@ -263,3 +263,4 @@ __pycache__/
 /huffman/asyoulik_decoded.txt
 /huffman/decoded.huff
 /huffman/encoded.huff
+/huffman/huffman.cpp

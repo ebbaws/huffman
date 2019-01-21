@@ -27,7 +27,7 @@ bool HuffmanEncoder::encode() {
 	int charStats[maxAlphabetSize];
 
 	ifstream::pos_type size;
-	char * memblock;
+	char latestByte;
 
 	for (int j = 0; j < maxAlphabetSize; j++)
 		charStats[j] = 0; // Initialize statistics
@@ -36,22 +36,22 @@ bool HuffmanEncoder::encode() {
 	if (file.is_open())
 	{
 		size = file.tellg();
-		memblock = new char[(unsigned int)size];
 		file.seekg(0, ios::beg);
-		file.read(memblock, size);
-		file.close();
-
 		cout << "File loaded." << endl;
 
 		cout << "Gathering statistics..." << endl;
 
-		//Count number of occurrences for every symbol
-		for (int j = 0; j < size; j++)
-		{
-			charStats[(unsigned char)memblock[j]]++;
+		while (file.get(latestByte)) {
+			charStats[char2index(latestByte)]++;
 		}
 
-		delete[] memblock;
+		//cout << "Number of occurrences for each character: " << endl;
+		//for (int i = 0; i < maxAlphabetSize; i++) {
+		//	cout << index2char(i) << ": " << charStats[i] << endl;
+		//}
+
+		file.close();
+
 	}
 	else {
 		cout << "Unable to open file." << endl;
@@ -65,10 +65,8 @@ bool HuffmanEncoder::encode() {
 	tree.writeCodeLengths(codeTable);
 
 	cout << "Setting up code table" << endl;
-	//codeTable.print();
 	codeTable.setupCodes();
 	//codeTable.print();
-	
 
 	file.open(inputFilePath, ios::in | ios::binary | ios::ate);
 
@@ -78,31 +76,23 @@ bool HuffmanEncoder::encode() {
 
 		size = file.tellg();
 		inSize = (double)size;
-		memblock = new char[(int)size];
 		file.seekg(0, ios::beg);
-		file.read(memblock, size);
-		file.close();
-
-		//cout << "Number of chars in original file: " << (int)size << endl;
+		
 		cout << "Writing to file... " << endl;
 
 		ByteBuffer buffer = ByteBuffer();
 		ofstream outputStream(outputFilePath, ios::binary);
 		codeTable.writeSideInfo(buffer, outputStream);
 
-		// Encode and write to file
-		for (int j = 0; j < size; j++)
+		while (file.get(latestByte))
 		{
-			//if (j < 10) {
-			//	cout << "writing code for symbol " << char2index(memblock[j]) <<
-			//		" (" << memblock[j] << ")" << endl;
-			//}
-			
-			codeTable.writeCode(char2index(memblock[j]),
+			codeTable.writeCode(char2index(latestByte),
 				buffer, outputStream);
 		}
 		codeTable.writeEOF(buffer, outputStream);
 		outSize = (double)(outputStream.tellp());
+
+		file.close();
 
 		outputStream.close();
 
