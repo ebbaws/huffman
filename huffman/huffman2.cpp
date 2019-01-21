@@ -47,7 +47,7 @@ bool test(string & inputFilePath) {
 void printUsageInstructions() {
 	cout << "Please specify an input file name" << endl;
 	cout << "For decode mode, write -decode" << endl;
-	cout << "For test mode, write -test" << endl;
+	cout << "Debug options: -test, -testsort" << endl;
 	cout << "Output file name (for decode or encode mode)" <<
 		" can also be specified after input file name" << endl;
 }
