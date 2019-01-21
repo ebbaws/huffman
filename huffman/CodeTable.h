@@ -11,24 +11,27 @@ private:
 	unsigned long long codeEOF = 0;
 	int lengthEOF = 0;
 	//int leastLikelyIdx = -1;
+
+	bool decodeMode = false;
 	int sortedIndexes[maxAlphabetSize];
 	bool sortedIndexesAvailable = false;
 	void printLine(int index);
+	void setupCodeLengthLookup();
 
 	// Idea for different representation for the codes
 	//vector<bool> codes[maxAlphabetSize];
 	
 	// Some ideas for making code identification faster
-	//bool isReady = false;
-	//int codeLengthLookup[maxAlphabetSize];
-	//int minLength;
-	//int maxLength;
+	bool readyForDecode = false;
+	int codeLengthLookup[maxAlphabetSize];
+	int minLength;
+	int maxLength;
 
 public:
 	CodeTable(); 
 	~CodeTable();
 	void print();
-	void standardizeAndSetEOF();
+	void setupCodes();
 	void writeSideInfo(ByteBuffer& buffer, std::ofstream& stream);
 	void writeCode(int index, ByteBuffer& buffer, std::ofstream& stream);
 	void writeEOF(ByteBuffer& buffer, std::ofstream& stream);

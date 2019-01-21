@@ -143,6 +143,7 @@ void testSort() {
 }
 
 bool compareFiles(string & fileName1, string & fileName2) {
+	cout << "Comparing files... ";
 	ifstream file1(fileName1, ios::in | ios::binary | ios::ate);
 	ifstream file2(fileName2, ios::in | ios::binary | ios::ate);
 

@@ -64,9 +64,9 @@ bool HuffmanEncoder::encode() {
 	CodeTable codeTable = CodeTable();
 	tree.writeCodeLengths(codeTable);
 
-	cout << "Standardizing code table" << endl;
+	cout << "Setting up code table" << endl;
 	//codeTable.print();
-	codeTable.standardizeAndSetEOF();
+	codeTable.setupCodes();
 	//codeTable.print();
 	
 
@@ -83,7 +83,7 @@ bool HuffmanEncoder::encode() {
 		file.read(memblock, size);
 		file.close();
 
-		cout << "Number of chars in original file: " << (int)size << endl;
+		//cout << "Number of chars in original file: " << (int)size << endl;
 		cout << "Writing to file... " << endl;
 
 		ByteBuffer buffer = ByteBuffer();

@@ -35,14 +35,11 @@ int Decoder::getBit(char bits, int bitPos) {
 	}
 }
 
-// get index of next code
+// Get index of next code
 int Decoder::getNextCode(ifstream & stream)
 {
 	int minLength = codeTable.getMinLength();
 	int maxLength = codeTable.getMaxLength();
-
-	//cout << "Code min length: " << minLength << endl;
-	//cout << "Code max length: " << maxLength << endl;
 
 	int currentLength = 0;
 	unsigned long long currentCode = 0;
@@ -94,7 +91,7 @@ bool Decoder::decode()
 		// (first 256 bytes are code table data)
 		file.seekg(256);
 		if (file.get(latestByte)) {
-			cout << "Read " << char2index(latestByte) << " from stream" << endl;
+			//cout << "Read " << char2index(latestByte) << " from stream" << endl;
 		}
 		else {
 			cout << "Something went wrong" << endl;
@@ -122,6 +119,10 @@ bool Decoder::decode()
 			}
 
 			j++;
+
+			//if (j % 1000 == 0) {
+			//	cout << "decode iteration #" << j << endl;
+			//}
 
 		}
 

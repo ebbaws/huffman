@@ -7,6 +7,7 @@ CodeTable::CodeTable()
 	for (int i = 0; i < maxAlphabetSize; i++) {
 		codes[i] = 0;
 		lengths[i] = 0;
+		codeLengthLookup[i] = -1;
 	}
 }
 
@@ -28,8 +29,6 @@ void CodeTable::print() {
 	}
 }
 
-// to modify this for the new code representation,
-// just change type of input code to vector<bool>
 void CodeTable::setCode(int index, unsigned long long code, int codeLength) {
 	codes[index] = code;
 	lengths[index] = codeLength;
@@ -39,12 +38,44 @@ void CodeTable::setLength(int index, int codeLength) {
 	lengths[index] = codeLength;
 }
 
-// Modify the codes to a standard appearance, so that we only
-// need the code lengths as side info for decoding.
+void CodeTable::setupCodeLengthLookup() {
+
+	int currentLength = -1;
+
+	for (int i = 0; i < maxAlphabetSize; i++) {
+		if (lengths[sortedIndexes[i]] != currentLength) {
+			if (currentLength == 0) {
+				minLength = lengths[sortedIndexes[i]];
+			}
+
+			currentLength = lengths[sortedIndexes[i]];
+			codeLengthLookup[currentLength] = i;
+		}
+	}
+
+	maxLength = currentLength;
+
+	//cout << "Code length lookup table" << endl;
+	//for (int i = 0; i < maxAlphabetSize; i++) {
+	//	cout << i << ": " << codeLengthLookup[i] << ", ";
+	//}
+
+	//cout << endl;
+
+	//cout << "Min code length: " << minLength << endl;
+	//cout << "Max code length: " << maxLength << endl;
+
+	readyForDecode = true;
+
+}
+
+// Set codes to a standard appearance based on code lengths.
 // Also, add a valid end-of-file (EOF) code to this table.
-void CodeTable::standardizeAndSetEOF() {
-	mySort(lengths, sortedIndexes, maxAlphabetSize, true);
-	sortedIndexesAvailable = true;
+void CodeTable::setupCodes() {
+	if (!sortedIndexesAvailable) {
+		mySort(lengths, sortedIndexes, maxAlphabetSize, true);
+		sortedIndexesAvailable = true;
+	}
 
 	int currentIdx = 0;
 	while (lengths[sortedIndexes[currentIdx]] == 0) currentIdx++;
@@ -57,8 +88,6 @@ void CodeTable::standardizeAndSetEOF() {
 
 	currentIdx++;
 
-	// If we want each code represented as a vector<char>
-	// we have to find a way to do those shift operations
 	for (currentIdx; currentIdx < maxAlphabetSize; currentIdx++)
 	{
 		oldLength = thisLength;
@@ -70,13 +99,14 @@ void CodeTable::standardizeAndSetEOF() {
 
 	// Modify the tree slightly to include an EOF code
 	// by splitting the "least likely" node
-	int leastLikelyIdx = sortedIndexes[255]; // !!!!!!
+	int leastLikelyIdx = sortedIndexes[255];
 
 	codes[leastLikelyIdx] = 2 * codes[leastLikelyIdx];
 	lengths[leastLikelyIdx]++;
 	codeEOF = codes[leastLikelyIdx] + 1;
 	lengthEOF = lengths[leastLikelyIdx];
 	//print();
+
 }
 
 void CodeTable::writeSideInfo(ByteBuffer & buffer, std::ofstream& stream)
@@ -94,8 +124,6 @@ void CodeTable::writeSideInfo(ByteBuffer & buffer, std::ofstream& stream)
 
 }
 
-// For new code representation the addBits method in ByteBuffer
-// will have to change...
 void CodeTable::writeCode(int index, ByteBuffer & buffer, std::ofstream & stream)
 {
 	buffer.addBits(codes[index], lengths[index]);
@@ -110,7 +138,7 @@ void CodeTable::writeEOF(ByteBuffer & buffer, std::ofstream & stream)
 
 // Reconstruct table from header of encoded file
 bool CodeTable::initializeFromFileHeader(string & fileName) {
-	// Attempt to open file
+	decodeMode = true;
 	ifstream file(fileName, ios::in | ios::binary | ios::ate);
 	char nextByte;
 	if (file.is_open()) {
@@ -126,7 +154,8 @@ bool CodeTable::initializeFromFileHeader(string & fileName) {
 		
 		file.close();
 
-		standardizeAndSetEOF();
+		setupCodes();
+		setupCodeLengthLookup();
 		return true;
 	}
 	else {
@@ -137,24 +166,17 @@ bool CodeTable::initializeFromFileHeader(string & fileName) {
 
 int CodeTable::matchCode(unsigned long long code, int codeLength)
 {
+	if (!readyForDecode) return -1;
+
 	if ((code == codeEOF) && (codeLength == lengthEOF))
 		return 256;
 
+	int currentIdx = codeLengthLookup[codeLength];
+
+	if (currentIdx == -1) return -1; // Table has no codes of this length
+
 	int matchIdx = -1;
-
-	if (!sortedIndexesAvailable) {
-		mySort(lengths, sortedIndexes, maxAlphabetSize, true);
-		sortedIndexesAvailable = true;
-	}
-
-	// maybe we should save actual alphabet size somewhere so
-	// we don't have to step through a bunch of zeros here,
-	// or think of some other more efficient solution
-	// (maybe create some kind of "lookup table" for the lengths?)
-	int currentIdx = 0;
-	while (lengths[sortedIndexes[currentIdx]] < codeLength)
-		currentIdx++;
-
+	
 	while ((lengths[sortedIndexes[currentIdx]] == codeLength)
 			&&(matchIdx==-1)) {
 		if (codes[sortedIndexes[currentIdx]] == code) {
@@ -169,6 +191,10 @@ int CodeTable::matchCode(unsigned long long code, int codeLength)
 
 int CodeTable::getMinLength()
 {
+	if (readyForDecode) {
+		return minLength;
+	}
+
 	if (!sortedIndexesAvailable) {
 		mySort(lengths, sortedIndexes, maxAlphabetSize, true);
 		sortedIndexesAvailable = true;
@@ -183,6 +209,10 @@ int CodeTable::getMinLength()
 
 int CodeTable::getMaxLength()
 {
+	if (readyForDecode) {
+		return maxLength;
+	}
+
 	if (!sortedIndexesAvailable) {
 		mySort(lengths, sortedIndexes, maxAlphabetSize, true);
 		sortedIndexesAvailable = true;
