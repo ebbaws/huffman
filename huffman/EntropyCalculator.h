@@ -8,6 +8,7 @@ public:
 	EntropyCalculator();
 	~EntropyCalculator();
 	double calcMemorylessEntropy(std::string filePath);
+	double calcHigherOrderEntropy(std::string filePath, int order);
 
 };
 
