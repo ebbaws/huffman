@@ -31,7 +31,7 @@ bool decode(string & inputFilePath, string & outputFilePath) {
 bool calcEntropy(string & inputFilePath) {
 	EntropyCalculator calculator;
 	//double entropy = calculator.calcMemorylessEntropy(inputFilePath);
-	double entropy = calculator.calcHigherOrderEntropy(inputFilePath, 4);
+	double entropy = calculator.calcHigherOrderEntropy(inputFilePath, 2);
 	
 	if (entropy < 0.0) {
 		cout << "Entropy calculation failed" << endl;

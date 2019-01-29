@@ -70,19 +70,6 @@ double EntropyCalculator::calcMemorylessEntropy(std::string filePath)
 	return entropy;
 }
 
-
-void printWithoutNewlineEtc(char c) {
-	if (c == '\n') {
-		cout << "\\n";
-	}
-	else if (c == '\t') {
-		cout << "\\t";
-	}
-	else {
-		cout << c;
-	}
-}
-
 double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 	int order)
 {
@@ -91,6 +78,7 @@ double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 	char latestByte;
 	int sequenceLength = order + 1;
 	int numUniqueSequences = 0;
+	int numNonUniqueSequences;
 
 	char * uniqs; // To store unique char sequences
 	int * sequenceStats; // To store # of occurrences
@@ -102,9 +90,7 @@ double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 		size = file.tellg();
 		file.seekg(0, ios::beg);
 		cout << "File loaded." << endl;
-
-		cout << "Gathering statistics..." << endl;
-
+		
 		try {
 			uniqs = new char[sequenceLength*(int)size];
 			sequenceStats = new int[(int)size];
@@ -115,6 +101,10 @@ double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 			file.close();
 			return -1.0;
 		}
+
+		numNonUniqueSequences = static_cast<int>(size) - order;
+
+		cout << "Gathering sequence statistics (may take some time) ";
 
 		// Read the first few characters
 		for (int i = 1; i < sequenceLength; i++) {
@@ -132,16 +122,8 @@ double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 			}
 			latest[sequenceLength - 1] = latestByte;
 
-			if (numUniqueSequences < 100) {
-				for (int j = 0; j < sequenceLength; j++) {
-					printWithoutNewlineEtc(latest[j]);
-				}
-				cout << endl;
-			}
-			
-
 			// Search for matches among our unique sequences so far
-			int matchFound = false;
+			bool matchFound = false;
 			int charIdx = 0;
 			for (int i = 0; i < numUniqueSequences; i++) {
 				// Compare the latest sequence to this one
@@ -169,10 +151,14 @@ double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 					charIdx++;
 				}
 				numUniqueSequences++;
-
 			}
-		}
 
+			if (static_cast<int>(file.tellg()) % 1500 == 0) {
+				cout << '.';
+			}
+
+		}
+		cout << " done" << endl;
 		file.close();
 
 	}
@@ -182,18 +168,73 @@ double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 	}
 
 	
-	cout << "Found " << numUniqueSequences << " unique sequences" << endl;
+	cout << "Found " << numUniqueSequences << " unique sequences of length "
+		<< sequenceLength << endl;
 
-	for (int i = 0; i < numUniqueSequences; i++) {
-		for (int j = i*sequenceLength; j < (i+1)*sequenceLength; j++) {
-			printWithoutNewlineEtc(uniqs[j]);
+	cout << "Computing entropy" << endl;
+	
+	int k = 0;
+	char * state = new char[order];
+	int charStats[256];
+	int seqCount;
+	int stateStats;
+	double entropy = 0.0;
+	double logConverter = 1 / log(2.0);
+
+	// In the next loop we go through the list of unique
+	// <order+1>-length character sequences. In each iteration we
+	// look at all sequences that have the first <order> characters
+	// in common, compiling statistics about the last character,
+	// estimating static and conditional probabilities and
+	// estimating the entropy from there.
+	
+	while (k < numUniqueSequences) {
+		// Save this iteration's state (first <order> characters)
+		for (int l = 0; l < order; l++)
+			state[l] = uniqs[k*sequenceLength+l];
+
+		seqCount = 1;
+		charStats[0] = sequenceStats[k];
+		stateStats = sequenceStats[k];		
+
+		// Compile conditional character statistics for this state
+		for (int j = (k + 1); j < numUniqueSequences; j++) {
+			if (sequenceStats[j] > 0) {
+				bool matchFound = true;
+				for (int i = 0; i < order; i++) {
+					matchFound = matchFound &&
+						(uniqs[j*sequenceLength + i] == state[i]);
+				}
+
+				if (matchFound) {
+					charStats[seqCount] = sequenceStats[j];
+					stateStats = stateStats + sequenceStats[j];
+					seqCount++;
+					sequenceStats[j] = -1; // Mark sequence as "dealt with"
+				}
+			}
 		}
-		cout << " (" << sequenceStats[i] << "); ";
+
+		// Compute this state's entropy contribution
+		double stateProb = static_cast<double>(stateStats) / numNonUniqueSequences; //??
+		double condEntropy = 0.0;
+
+		for (int i = 0; i < seqCount; i++) {
+			double condProb = static_cast<double>(charStats[i]) / stateStats;
+			condEntropy -= condProb * logConverter * log(condProb);
+		}
+
+		entropy += stateProb * condEntropy; // Add to total entropy
+
+		k++;
+		while (sequenceStats[k] < 0)
+		{
+			// Step past any sequences that have already been matched
+			k++;
+		}
+		//cout << '.';
 	}
 	cout << endl;
 
-	double entropy = 0.0;
-
-	
 	return entropy;
 }
