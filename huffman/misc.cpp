@@ -1,6 +1,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include "misc.h"
 using namespace std;
 
 // Function to convert a char (range -128 to 127) into an index
@@ -87,7 +88,7 @@ void flip(int *myArray, int start, int end) {
 // just provide a valid pointer)
 // In case of equality between values, the original order of indexes
 // will be preserved.
-void mySort(int *values, int *indexes, int length, bool ascending = false) {
+void mySort(int *values, int *indexes, int length, bool ascending) {
 	// Initialize indexes
 	for (int i = 0; i < length; i++) {
 		indexes[i] = i;
@@ -140,6 +141,33 @@ void testSort() {
 	int values[10] = { 0, 4, 3, 0, 3, 0, 3, 0, 3, 4 };
 	mySort(values, indexes, 10, true);
 
+}
+
+int intFromChar(char myChar) {
+	if (myChar < 48 || myChar > 57) {
+		return -1;
+	} else {
+		return static_cast<int>(myChar - 48);
+	}
+}
+
+int stringToPositiveInt(std::string & myString)
+{
+	int result = 0;
+
+	int stringSize = static_cast<int>(myString.size());
+
+	for (int i = 0; i < stringSize; i++) {
+		int digit = intFromChar(myString.at(i));
+		if (digit < 0) {
+			return -1;
+		}
+		else {
+			result = result * 10 + digit;
+		}
+	}
+
+	return result;
 }
 
 bool compareFiles(string & fileName1, string & fileName2) {

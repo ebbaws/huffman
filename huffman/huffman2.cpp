@@ -28,10 +28,16 @@ bool decode(string & inputFilePath, string & outputFilePath) {
 
 }
 
-bool calcEntropy(string & inputFilePath) {
+bool calcEntropy(string & inputFilePath, int order) {
 	EntropyCalculator calculator;
-	//double entropy = calculator.calcMemorylessEntropy(inputFilePath);
-	double entropy = calculator.calcHigherOrderEntropy(inputFilePath, 2);
+	double entropy;
+
+	if (order > 0) {
+		entropy = calculator.calcHigherOrderEntropy(inputFilePath, order);
+	}
+	else {
+		entropy = calculator.calcMemorylessEntropy(inputFilePath);
+	}
 	
 	if (entropy < 0.0) {
 		cout << "Entropy calculation failed" << endl;
@@ -74,23 +80,49 @@ void printUsageInstructions() {
 int main (int argc, char *argv[])  {
 	string inputFileName = "";
 	string outputFileName = "output.huff";
-
+	
 	bool decodeMode = false;
 	bool testMode = false;
 	bool testSortMode = false;
 	bool entropyMode = false;
-	bool result = false;
+	int entropyOrder = 0;
+
+	// Parse arguments
+
+	bool waitingForEntropyOrder = false;
+	bool modeSpecified = false;
 
 	if (argc > 1) {
 		for (int i = 1; i < argc; i++) {
 			string argString(argv[i], strlen(argv[i]));
+
+			if (waitingForEntropyOrder) {
+				// Determine if this argument is a number.
+				// If so, extract it and assign it to entropyOrder
+				int order = stringToPositiveInt(argString);
+				waitingForEntropyOrder = false;
+				if (order < 0) {
+					cout << "No entropy order specified" << endl;
+				}
+				else {
+					cout << "Entropy order: " << order << endl;
+					entropyOrder = order;
+					continue;
+				}
+			}
 
 			if (argv[i][0] == '-') {
 				string decodeString = "-decode";
 				string testString = "-test";
 				string testSortString = "-testsort";
 				string entropyString = "-entropy";
-				
+
+				if (modeSpecified) {
+					cout << "Too many options specified" << endl;
+					printUsageInstructions();
+					return -1;
+				}
+
 				if (!argString.compare(decodeString)) {
 					decodeMode = true;
 				} else if (!argString.compare(testString)) {
@@ -101,10 +133,14 @@ int main (int argc, char *argv[])  {
 				}
 				else if (!argString.compare(entropyString)) {
 					entropyMode = true;
+					waitingForEntropyOrder = true;
 				}
 				else {
 					cout << "Invalid option" << endl;
+					printUsageInstructions();
+					return -1;
 				}
+				modeSpecified = true;
 
 			} else {
 				if (inputFileName == "") { 
@@ -119,6 +155,10 @@ int main (int argc, char *argv[])  {
 		}
 	}
 
+	// Do the thing
+
+	bool result = false;
+
 	if (testSortMode) {
 		testSort();
 		return 0;
@@ -126,7 +166,7 @@ int main (int argc, char *argv[])  {
 
 	if (inputFileName == "") {
 		printUsageInstructions();
-		return 0;
+		return -1;
 	}
 	else {
 		cout << "Input file name: " << inputFileName << endl;
@@ -138,7 +178,7 @@ int main (int argc, char *argv[])  {
 		result = test(inputFileName);
 	}
 	else if (entropyMode) {
-		result = calcEntropy(inputFileName);
+		result = calcEntropy(inputFileName, entropyOrder);
 	}
 	else {
 		cout << "Output file name: " << outputFileName << endl;

@@ -236,5 +236,9 @@ double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 	}
 	cout << endl;
 
+	delete[] uniqs;
+	delete[] sequenceStats;
+	delete[] latest;
+
 	return entropy;
 }
