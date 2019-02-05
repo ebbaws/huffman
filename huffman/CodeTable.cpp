@@ -1,6 +1,6 @@
 #include "CodeTable.h"
 #include <iostream>
-using namespace std;
+//using namespace std;
 
 CodeTable::CodeTable()
 {
@@ -17,13 +17,13 @@ CodeTable::~CodeTable()
 
 void CodeTable::printLine(int idx) {
 	if (lengths[idx] != 0) {
-		cout << index2char(idx) << ": " << codes[idx] <<
-			" (" << lengths[idx] << " bits)" << endl;
+		std::cout << index2char(idx) << ": " << codes[idx] <<
+			" (" << lengths[idx] << " bits)" << std::endl;
 	}
 }
 
 void CodeTable::print() {
-	cout << "helo i am table " << endl;
+	std::cout << "helo i am table " << std::endl;
 	for (int i = 0; i < maxAlphabetSize; i++) {
 		printLine(i);
 	}
@@ -137,9 +137,11 @@ void CodeTable::writeEOF(ByteBuffer & buffer, std::ofstream & stream)
 }
 
 // Reconstruct table from header of encoded file
-bool CodeTable::initializeFromFileHeader(string & fileName) {
+bool CodeTable::initializeFromFileHeader(std::string & fileName) {
+	using std::ios;
+	
 	decodeMode = true;
-	ifstream file(fileName, ios::in | ios::binary | ios::ate);
+	std::ifstream file(fileName, ios::in | ios::binary | ios::ate);
 	char nextByte;
 	if (file.is_open()) {
 		file.seekg(0, ios::beg);

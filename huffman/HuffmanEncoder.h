@@ -2,19 +2,19 @@
 #define HUFFMANENCODER_H
 
 #include <string>
-using namespace std;
+//using namespace std;
 
 class HuffmanEncoder
 {
 private:
-	string inputFilePath = "";
-	string outputFilePath = "";
+	std::string inputFilePath = "";
+	std::string outputFilePath = "";
 
 public:
 	HuffmanEncoder();
 	~HuffmanEncoder();
-	void setInputFile(string path);
-	void setOutputFile(string path);
+	void setInputFile(std::string path);
+	void setOutputFile(std::string path);
 	bool encode();
 
 };

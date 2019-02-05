@@ -1,7 +1,7 @@
 #include "HuffmanTree.h"
 #include <iostream>
 #include "misc.h"
-using namespace std;
+//using namespace std;
 
 void HuffmanTree::exploreNode(int nodeID, int length, CodeTable & codeTable)
 {
@@ -37,6 +37,9 @@ bool HuffmanTree::build(int *charStats, bool verbose) {
 	int nodeWeights[maxTreeSize];
 	int indexes[maxAlphabetSize];
 	mySort(charStats, indexes, maxAlphabetSize);
+
+	using std::cout;
+	using std::endl;
 
 	if (verbose) {
 		cout << "Sorted char statistics: " << endl;
@@ -118,9 +121,9 @@ void HuffmanTree::writeCodeLengths(CodeTable &codeTable)
 
 void HuffmanTree::print()
 {
-	cout << "Huffman tree table: " << endl;
+	std::cout << "Huffman tree table: " << std::endl;
 	for (int i = 0; i < treeSize; i++) {
-		cout << i << ":\t" << mTreeTable[i][0] << "\t" <<
-			mTreeTable[i][1] << endl;
+		std::cout << i << ":\t" << mTreeTable[i][0] << "\t" <<
+			mTreeTable[i][1] << std::endl;
 	}
 }

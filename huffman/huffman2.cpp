@@ -8,9 +8,9 @@
 #include "ByteBuffer.h"
 #include "Decoder.h"
 #include "EntropyCalculator.h"
-using namespace std;
+//using namespace std;
 
-bool encode(string & inputFilePath, string & outputFilePath) {
+bool encode(std::string & inputFilePath, std::string & outputFilePath) {
 	HuffmanEncoder encoder;
 	encoder.setInputFile(inputFilePath);
 	encoder.setOutputFile(outputFilePath);
@@ -18,7 +18,7 @@ bool encode(string & inputFilePath, string & outputFilePath) {
 	return encoder.encode();
 }
 
-bool decode(string & inputFilePath, string & outputFilePath) {
+bool decode(std::string & inputFilePath, std::string & outputFilePath) {
 	
 	Decoder decoder;
 	decoder.setInputFile(inputFilePath);
@@ -28,7 +28,7 @@ bool decode(string & inputFilePath, string & outputFilePath) {
 
 }
 
-bool calcEntropy(string & inputFilePath, int order) {
+bool calcEntropy(std::string & inputFilePath, int order) {
 	EntropyCalculator calculator;
 	double entropy;
 
@@ -40,19 +40,19 @@ bool calcEntropy(string & inputFilePath, int order) {
 	}
 	
 	if (entropy < 0.0) {
-		cout << "Entropy calculation failed" << endl;
+		std::cout << "Entropy calculation failed" << std::endl;
 		return false;
 	}
 	else {
-		cout << "Entropy: " << entropy << endl;
+		std::cout << "Entropy: " << entropy << std::endl;
 		return true;
 	}
 
 }
 
-bool test(string & inputFilePath) {
-	string encodedFilePath = "encoded.huff";
-	string decodedFilePath = "decoded.huff";
+bool test(std::string & inputFilePath) {
+	std::string encodedFilePath = "encoded.huff";
+	std::string decodedFilePath = "decoded.huff";
 	if (encode(inputFilePath, encodedFilePath)&&
 		decode(encodedFilePath, decodedFilePath)) {
 
@@ -60,7 +60,7 @@ bool test(string & inputFilePath) {
 
 	}
 	else {
-		cout << "Couldn't finish test" << endl;
+		std::cout << "Couldn't finish test" << std::endl;
 		return false;
 	}
 
@@ -68,6 +68,8 @@ bool test(string & inputFilePath) {
 
 
 void printUsageInstructions() {
+	using std::cout;
+	using std::endl;
 	cout << "Please specify an input file name" << endl;
 	cout << "Default mode: encode" << endl;
 	cout << "For decode mode, write -decode" << endl;
@@ -78,6 +80,8 @@ void printUsageInstructions() {
 }
 
 int main (int argc, char *argv[])  {
+	using std::string;
+
 	string inputFileName = "";
 	string outputFileName = "output.huff";
 	
@@ -91,6 +95,9 @@ int main (int argc, char *argv[])  {
 
 	bool waitingForEntropyOrder = false;
 	bool modeSpecified = false;
+
+	using std::cout;
+	using std::endl;
 
 	if (argc > 1) {
 		for (int i = 1; i < argc; i++) {
@@ -171,7 +178,6 @@ int main (int argc, char *argv[])  {
 	else {
 		cout << "Input file name: " << inputFileName << endl;
 	}
-
 
 	if (testMode) {
 		cout << "Starting the test" << endl;

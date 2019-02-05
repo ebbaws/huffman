@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include "misc.h"
-using namespace std;
+//using namespace std;
 
 // Function to convert a char (range -128 to 127) into an index
 // (range 0-255)
@@ -170,10 +170,14 @@ int stringToPositiveInt(std::string & myString)
 	return result;
 }
 
-bool compareFiles(string & fileName1, string & fileName2) {
+bool compareFiles(std::string & fileName1, std::string & fileName2) {
+	using std::cout;
+	using std::endl;
+	using std::ios;
+	
 	cout << "Comparing files... ";
-	ifstream file1(fileName1, ios::in | ios::binary | ios::ate);
-	ifstream file2(fileName2, ios::in | ios::binary | ios::ate);
+	std::ifstream file1(fileName1, ios::in | ios::binary | ios::ate);
+	std::ifstream file2(fileName2, ios::in | ios::binary | ios::ate);
 
 	if (file1.is_open() && file2.is_open()) {
 

@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include "misc.h"
-using namespace std;
+//using namespace std;
 
 EntropyCalculator::EntropyCalculator()
 {
@@ -17,13 +17,17 @@ double EntropyCalculator::calcMemorylessEntropy(std::string filePath)
 {
 	int charStats[maxAlphabetSize];
 
-	ifstream::pos_type size;
+	std::ifstream::pos_type size;
 	char latestByte;
 
 	for (int j = 0; j < maxAlphabetSize; j++)
 		charStats[j] = 0; // Initialize statistics
 
-	ifstream file(filePath, ios::in | ios::binary | ios::ate);
+	using std::cout;
+	using std::endl;
+	using std::ios;
+
+	std::ifstream file(filePath, ios::in | ios::binary | ios::ate);
 	if (file.is_open())
 	{
 		size = file.tellg();
@@ -73,8 +77,7 @@ double EntropyCalculator::calcMemorylessEntropy(std::string filePath)
 double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 	int order)
 {
-
-	ifstream::pos_type size;
+	std::ifstream::pos_type size;
 	char latestByte;
 	int sequenceLength = order + 1;
 	int numUniqueSequences = 0;
@@ -84,7 +87,11 @@ double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 	int * sequenceStats; // To store # of occurrences
 	char * latest; // Buffer for latest characters read
 
-	ifstream file(filePath, ios::in | ios::binary | ios::ate);
+	using std::cout;
+	using std::endl;
+	using std::ios;
+
+	std::ifstream file(filePath, ios::in | ios::binary | ios::ate);
 	if (file.is_open())
 	{
 		size = file.tellg();
@@ -96,7 +103,7 @@ double EntropyCalculator::calcHigherOrderEntropy(std::string filePath,
 			sequenceStats = new int[(int)size];
 			latest = new char[sequenceLength];
 		}
-		catch(exception &e) {
+		catch(std::exception &e) {
 			cout << "Something went wrong: " << e.what() << endl;
 			file.close();
 			return -1.0;

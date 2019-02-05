@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-using namespace std;
+//using namespace std;
 
 Decoder::Decoder()
 {
@@ -14,12 +14,12 @@ Decoder::~Decoder()
 {
 }
 
-void Decoder::setInputFile(string path)
+void Decoder::setInputFile(std::string path)
 {
 	inputFilePath = path;
 }
 
-void Decoder::setOutputFile(string path)
+void Decoder::setOutputFile(std::string path)
 {
 	outputFilePath = path;
 }
@@ -36,7 +36,7 @@ int Decoder::getBit(char bits, int bitPos) {
 }
 
 // Get index of next code
-int Decoder::getNextCode(ifstream & stream)
+int Decoder::getNextCode(std::ifstream & stream)
 {
 	int minLength = codeTable.getMinLength();
 	int maxLength = codeTable.getMaxLength();
@@ -78,12 +78,16 @@ bool Decoder::decode()
 	bool res = codeTable.initializeFromFileHeader(inputFilePath);
 	if (!res) return false;
 
+	using std::cout;
+	using std::endl;
+	using std::ios;
+
 	cout << "Initialized code table for decode" << endl;
 
-	ifstream file(inputFilePath, ios::in | ios::binary | ios::ate);
+	std::ifstream file(inputFilePath, ios::in | ios::binary | ios::ate);
 	if (file.is_open()) {
 
-		ofstream fout(outputFilePath, ios::binary);
+		std::ofstream fout(outputFilePath, ios::binary);
 
 		currentBitPosition = 0;
 

@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include "misc.h"
-using namespace std;
+//using namespace std;
 
 ByteBuffer::ByteBuffer()
 {
@@ -57,7 +57,10 @@ void ByteBuffer::writeBytes(std::ofstream& stream,
 }
 
 void ByteBuffer::print() {
-	cout << "Current state of byte buffer: " << endl;
+	using std::cout;
+	using std::endl;
+	
+	cout << "Current state of byte buffer: " << std::endl;
 	for (int i=0; i <= currentByte; i++) {
 		cout << char2index(bytes[i]) << " ";
 	}

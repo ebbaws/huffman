@@ -13,12 +13,12 @@ HuffmanEncoder::~HuffmanEncoder()
 {
 }
 
-void HuffmanEncoder::setInputFile(string path)
+void HuffmanEncoder::setInputFile(std::string path)
 {
 	inputFilePath = path;
 }
 
-void HuffmanEncoder::setOutputFile(string path)
+void HuffmanEncoder::setOutputFile(std::string path)
 {
 	outputFilePath = path;
 }
@@ -26,13 +26,17 @@ void HuffmanEncoder::setOutputFile(string path)
 bool HuffmanEncoder::encode() {
 	int charStats[maxAlphabetSize];
 
-	ifstream::pos_type size;
+	std::ifstream::pos_type size;
 	char latestByte;
 
 	for (int j = 0; j < maxAlphabetSize; j++)
 		charStats[j] = 0; // Initialize statistics
 
-	ifstream file(inputFilePath, ios::in | ios::binary | ios::ate);
+	using std::cout;
+	using std::endl;
+	using std::ios;
+
+	std::ifstream file(inputFilePath, ios::in | ios::binary | ios::ate);
 	if (file.is_open())
 	{
 		size = file.tellg();
@@ -81,7 +85,7 @@ bool HuffmanEncoder::encode() {
 		cout << "Writing to file... " << endl;
 
 		ByteBuffer buffer = ByteBuffer();
-		ofstream outputStream(outputFilePath, ios::binary);
+		std::ofstream outputStream(outputFilePath, ios::binary);
 		codeTable.writeSideInfo(buffer, outputStream);
 
 		while (file.get(latestByte))
