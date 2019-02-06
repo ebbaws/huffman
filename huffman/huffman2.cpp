@@ -84,15 +84,18 @@ int main (int argc, char *argv[])  {
 
 	string inputFileName = "";
 	string outputFileName = "output.huff";
+
+	enum Mode {
+		MODE_ENCODE,
+		MODE_DECODE,
+		MODE_ENTROPY,
+		MODE_TEST,
+		MODE_TEST_SORT
+	};
 	
-	bool decodeMode = false;
-	bool testMode = false;
-	bool testSortMode = false;
-	bool entropyMode = false;
-	int entropyOrder = 0;
-
 	// Parse arguments
-
+	Mode mode(MODE_ENCODE);
+	int entropyOrder = 0;
 	bool waitingForEntropyOrder = false;
 	bool modeSpecified = false;
 
@@ -131,15 +134,15 @@ int main (int argc, char *argv[])  {
 				}
 
 				if (!argString.compare(decodeString)) {
-					decodeMode = true;
+					mode = MODE_DECODE;
 				} else if (!argString.compare(testString)) {
-					testMode = true;
+					mode = MODE_TEST;
 				}
 				else if (!argString.compare(testSortString)) {
-					testSortMode = true;
+					mode = MODE_TEST_SORT;
 				}
 				else if (!argString.compare(entropyString)) {
-					entropyMode = true;
+					mode = MODE_ENTROPY;
 					waitingForEntropyOrder = true;
 				}
 				else {
@@ -162,11 +165,11 @@ int main (int argc, char *argv[])  {
 		}
 	}
 
-	// Do the thing
+	// Do what was requested
 
 	bool result = false;
 
-	if (testSortMode) {
+	if (mode==MODE_TEST_SORT) {
 		testSort();
 		return 0;
 	}
@@ -179,16 +182,16 @@ int main (int argc, char *argv[])  {
 		cout << "Input file name: " << inputFileName << endl;
 	}
 
-	if (testMode) {
+	if (mode==MODE_TEST) {
 		cout << "Starting the test" << endl;
 		result = test(inputFileName);
 	}
-	else if (entropyMode) {
+	else if (mode==MODE_ENTROPY) {
 		result = calcEntropy(inputFileName, entropyOrder);
 	}
 	else {
 		cout << "Output file name: " << outputFileName << endl;
-		if (decodeMode) {
+		if (mode==MODE_DECODE) {
 			cout << "Starting decoding" << endl;
 			result = decode(inputFileName, outputFileName);
 		}
