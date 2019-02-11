@@ -111,11 +111,7 @@ int main (int argc, char *argv[])  {
 				// If so, extract it and assign it to entropyOrder
 				int order = stringToPositiveInt(argString);
 				waitingForEntropyOrder = false;
-				if (order < 0) {
-					cout << "No entropy order specified" << endl;
-				}
-				else {
-					cout << "Entropy order: " << order << endl;
+				if (order >= 0) {
 					entropyOrder = order;
 					continue;
 				}
@@ -165,40 +161,51 @@ int main (int argc, char *argv[])  {
 		}
 	}
 
+	if (mode != MODE_TEST_SORT && inputFileName == "") {
+		printUsageInstructions();
+		return -1;
+	}
+
 	// Do what was requested
 
 	bool result = false;
 
-	if (mode==MODE_TEST_SORT) {
-		testSort();
-		return 0;
-	}
+	switch (mode) {
+	case MODE_ENCODE:
+		cout << "Attempting to encode file " <<
+			inputFileName << endl;
+		result = encode(inputFileName, outputFileName);
+		break;
 
-	if (inputFileName == "") {
-		printUsageInstructions();
-		return -1;
-	}
-	else {
-		cout << "Input file name: " << inputFileName << endl;
-	}
+	case MODE_DECODE:
+		cout << "Attempting to decode file " <<
+			inputFileName << endl;
+		result = decode(inputFileName, outputFileName);
+		break;
 
-	if (mode==MODE_TEST) {
-		cout << "Starting the test" << endl;
-		result = test(inputFileName);
-	}
-	else if (mode==MODE_ENTROPY) {
+	case MODE_ENTROPY:
+		cout << "Attempting to calculate order-" << entropyOrder <<
+			" entropy for " << inputFileName << endl;
 		result = calcEntropy(inputFileName, entropyOrder);
+		break;
+
+	case MODE_TEST:
+		cout << "Testing encoding and decoding on " <<
+			inputFileName << endl;
+		result = test(inputFileName);
+		break;
+	
+	case MODE_TEST_SORT:
+		cout << "Testing sorting algorithm" << endl;
+		result = true;
+		testSort();
+		break;
+
 	}
-	else {
-		cout << "Output file name: " << outputFileName << endl;
-		if (mode==MODE_DECODE) {
-			cout << "Starting decoding" << endl;
-			result = decode(inputFileName, outputFileName);
-		}
-		else {
-			cout << "Encode mode" << endl;
-			result = encode(inputFileName, outputFileName);
-		}
+
+	if (result && (mode == MODE_ENCODE || mode == MODE_DECODE)) {
+		cout << "Result was written to file " <<
+			outputFileName << endl;
 	}
 
 	return result ? 0 : -1;
